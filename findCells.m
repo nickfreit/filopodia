@@ -1,4 +1,6 @@
-function [bwImage, centroids, cells] = findCellCentroids(grayImage)
+% Using bigger median filter helps
+
+function [cells] = findCells(grayImage)
 filteredGray = medfilt2(grayImage);
 bwImage = imbinarize(filteredGray);
 
@@ -14,9 +16,5 @@ for i = 1:numCells
     cells(i).area = areas(i);
     cells(i).centroid = centroids(i, :);
 end
-figure;
-imshow(bwImage);
-hold on;
-scatter(centroids(:,1), centroids(:,2), 8);
 end
 
