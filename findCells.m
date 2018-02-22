@@ -1,20 +1,12 @@
-% Using bigger median filter helps
+function [cellCentroids, cellMask] = findCells(grayImage)
+filteredGray = medfilt2(grayImage, [10 10]); % better relative
+cellMask = imbinarize(filteredGray);
+cellMask = bwpropfilt(cellMask, 'area', [500 262144]); % better relative
 
-function [cells] = findCells(grayImage)
-filteredGray = medfilt2(grayImage);
-bwImage = imbinarize(filteredGray);
-
-stats = regionprops(bwImage, 'centroid', 'area');
-centroids = vertcat(stats.Centroid);
+stats = regionprops(cellMask, 'centroid', 'area');
+cellCentroids = vertcat(stats.Centroid);
 areas = vertcat(stats.Area);
-centroids = centroids(areas > mean(areas), :);
-numCells = size(centroids, 1);
-cells(numCells).area = 0;
-cells(numCells).centroid = 0;
+cellCentroids = cellCentroids(areas > 500, :); % make this relative
 
-for i = 1:numCells
-    cells(i).area = areas(i);
-    cells(i).centroid = centroids(i, :);
-end
 end
 
